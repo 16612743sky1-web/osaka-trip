@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오사카 여행 플래너 · 7.3–7.5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ece0;
+    --paper-2:#ece2d2;
+    --ink:#1d2335;
+    --ink-soft:#46506b;
+    --indigo:#26385f;
+    --indigo-deep:#1a2746;
+    --shu:#c8472b;        /* 주색 vermilion */
+    --shu-soft:#d96a4f;
+    --gold:#b08642;
+    --line:#d8ccb6;
+    --card:#fbf7ef;
+    --good:#3f7d59;
+    --rain:#34618e;
+    --shadow:0 1px 2px rgba(40,30,15,.08), 0 8px 26px -12px rgba(40,30,15,.28);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"IBM Plex Sans KR",sans-serif;
+    color:var(--ink);
+    background-color:var(--paper);
+    background-image:
+      radial-gradient(circle at 12% 8%, rgba(200,71,43,.05), transparent 42%),
+      radial-gradient(circle at 88% 92%, rgba(38,56,95,.06), transparent 46%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px}
+
+  /* ---------- header ---------- */
+  header{
+    position:relative;
+    background:
+      linear-gradient(155deg, var(--indigo-deep), var(--indigo) 60%, #2f456e);
+    color:#f3ece0;
+    padding:30px 0 26px;
+    overflow:hidden;
+    border-bottom:3px solid var(--shu);
+  }
+  header::before{
+    content:"";position:absolute;right:-40px;top:-40px;width:220px;height:220px;
+    background:radial-gradient(circle,var(--shu) 0%,var(--shu) 30%,transparent 31%);
+    opacity:.16;border-radius:50%;
+  }
+  header::after{
+    content:"大阪";position:absolute;right:14px;bottom:-14px;
+    font-family:"Gowun Batang",serif;font-size:84px;font-weight:700;
+    color:#fff;opacity:.06;letter-spacing:4px;
+  }
+  .eyebrow{
+    font-family:"DM Mono",monospace;font-size:11px;letter-spacing:3px;
+    text-transform:uppercase;color:var(--shu-soft);margin-bottom:8px;
+  }
+  h1{
+    font-family:"Gowun Batang",serif;font-weight:700;
+    font-size:31px;line-height:1.2;letter-spacing:-.5px;
+  }
+  h1 .sub{display:block;font-size:15px;font-weight:400;color:#cdbfa8;margin-top:6px;letter-spacing:.5px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:16px;font-size:13px;color:#d7cbb4}
+  .meta-row b{color:#f3ece0;font-weight:600}
+  .countdown{
+    display:inline-flex;align-items:baseline;gap:6px;margin-top:14px;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+    padding:6px 14px;border-radius:999px;font-size:13px;color:#e7ddc9;
+  }
+  .countdown b{font-family:"DM Mono",monospace;font-size:18px;color:#fff}
+
+  /* ---------- section shell ---------- */
+  section{margin-top:30px}
+  .sec-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .sec-head .kanji{font-family:"Gowun Batang",serif;color:var(--shu);font-size:22px;font-weight:700}
+  .sec-head h2{font-family:"Gowun Batang",serif;font-size:20px;font-weight:700;letter-spacing:-.3px}
+  .sec-head .line{flex:1;height:1px;background:var(--line)}
+
+  /* ---------- weather ---------- */
+  #wx-banner{
+    display:none;margin-bottom:14px;padding:11px 14px;border-radius:12px;
+    background:linear-gradient(90deg,rgba(52,97,142,.14),rgba(52,97,142,.05));
+    border:1px solid rgba(52,97,142,.3);color:var(--rain);font-size:13.5px;font-weight:500;
+  }
+  #wx-banner b{font-weight:700}
+  .wx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .wx-card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:14px 12px;text-align:center;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .wx-card .d{font-family:"DM Mono",monospace;font-size:11px;color:var(--ink-soft);letter-spacing:1px}
+  .wx-card .ico{font-size:30px;line-height:1.4;margin:2px 0}
+  .wx-card .t{font-family:"DM Mono",monospace;font-size:16px;font-weight:500}
+  .wx-card .t .lo{color:var(--ink-soft)}
+  .wx-card .desc{font-size:11px;color:var(--ink-soft);margin-top:3px}
+  .wx-card .rain-tag{
+    display:inline-block;margin-top:6px;font-size:10.5px;font-weight:600;
+    background:rgba(52,97,142,.14);color:var(--rain);padding:2px 8px;border-radius:999px;
+  }
+  .wx-card.is-rain{border-color:rgba(52,97,142,.45)}
+  .wx-loading{grid-column:1/-1;text-align:center;color:var(--ink-soft);font-size:13px;padding:18px}
+
+  /* ---------- itinerary days ---------- */
+  .day{
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--indigo);
+    border-radius:12px;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow);
+  }
+  .day h3{font-family:"Gowun Batang",serif;font-size:16px;display:flex;align-items:center;gap:8px}
+  .day h3 .dno{font-family:"DM Mono",monospace;font-size:11px;background:var(--indigo);color:#fff;
+    padding:2px 8px;border-radius:6px;letter-spacing:1px}
+  .day .date{font-size:12px;color:var(--ink-soft);margin-left:auto;font-family:"DM Mono",monospace}
+  .day ul{list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:7px}
+  .day li{font-size:13.5px;padding-left:18px;position:relative;color:var(--ink-soft)}
+  .day li::before{content:"";position:absolute;left:3px;top:8px;width:6px;height:6px;border-radius:50%;
+    background:var(--shu)}
+  .day li b{color:var(--ink);font-weight:600}
+  .day .note{margin-top:10px;font-size:12px;background:rgba(200,71,43,.07);border:1px dashed var(--shu-soft);
+    color:#8e3a26;padding:7px 10px;border-radius:8px}
+
+  /* ---------- filters ---------- */
+  .filters{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;align-items:center}
+  .chip{
+    font-size:12.5px;font-weight:500;padding:6px 13px;border-radius:999px;cursor:pointer;
+    border:1px solid var(--line);background:var(--card);color:var(--ink-soft);
+    transition:all .15s ease;user-select:none;
+  }
+  .chip:hover{border-color:var(--indigo)}
+  .chip.active{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+  .rain-toggle{
+    margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;
+    color:var(--rain);cursor:pointer;user-select:none;font-weight:500;
+  }
+  .rain-toggle input{accent-color:var(--rain);width:15px;height:15px}
+
+  /* ---------- place cards ---------- */
+  #places{display:flex;flex-direction:column;gap:12px}
+  .place{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:15px 16px;box-shadow:var(--shadow);transition:transform .12s ease;
+  }
+  .place.added{border-color:var(--shu);box-shadow:0 0 0 1px var(--shu),var(--shadow)}
+  .place .top{display:flex;align-items:flex-start;gap:10px}
+  .place .nm{font-family:"Gowun Batang",serif;font-size:16.5px;font-weight:700;line-height:1.3}
+  .place .nm small{display:block;font-family:"IBM Plex Sans KR";font-weight:400;font-size:11.5px;
+    color:var(--ink-soft);margin-top:2px;letter-spacing:.2px}
+  .place .area{margin-left:auto;flex-shrink:0;font-size:11px;color:var(--ink-soft);
+    font-family:"DM Mono",monospace;text-align:right;padding-top:3px}
+  .badges{display:flex;flex-wrap:wrap;gap:5px;margin:9px 0}
+  .badge{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:6px;letter-spacing:.2px}
+  .b-indoor{background:rgba(63,125,89,.13);color:var(--good)}
+  .b-res{background:rgba(176,134,66,.15);color:var(--gold)}
+  .b-cash{background:rgba(38,56,95,.12);color:var(--indigo)}
+  .b-closed{background:rgba(200,71,43,.12);color:var(--shu)}
+  .b-price{background:rgba(29,35,53,.08);color:var(--ink-soft)}
+  .b-terrace{background:rgba(52,97,142,.13);color:var(--rain)}
+  .place .tip{font-size:13px;color:var(--ink-soft);margin-top:2px}
+  .place .hours{font-size:11.5px;color:var(--ink-soft);font-family:"DM Mono",monospace;margin-top:7px}
+  .place .acts{display:flex;gap:8px;margin-top:12px}
+  .btn{
+    font-family:"IBM Plex Sans KR";font-size:12.5px;font-weight:600;cursor:pointer;
+    padding:7px 13px;border-radius:9px;border:1px solid var(--line);background:#fff;
+    color:var(--ink);transition:all .14s ease;text-decoration:none;display:inline-flex;
+    align-items:center;gap:5px;
+  }
+  .btn:hover{border-color:var(--indigo)}
+  .btn-add{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+  .btn-add.is-added{background:var(--shu);border-color:var(--shu)}
+  .btn-map{}
+  .terrace-warn{display:none;margin-top:8px;font-size:11.5px;color:var(--rain);
+    background:rgba(52,97,142,.08);padding:6px 10px;border-radius:8px}
+  body.raining .place[data-terrace="1"] .terrace-warn{display:block}
+
+  /* ---------- route builder ---------- */
+  .route-box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+  .route-empty{color:var(--ink-soft);font-size:13px;text-align:center;padding:14px 0}
+  #route-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+  #route-list li{display:flex;align-items:center;gap:10px;font-size:13.5px;
+    background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+  #route-list li .n{font-family:"DM Mono",monospace;background:var(--indigo);color:#fff;
+    width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;flex-shrink:0}
+  #route-list li .rm{margin-left:auto;cursor:pointer;color:var(--shu);font-size:18px;
+    line-height:1;border:none;background:none;padding:2px 6px}
+  .route-acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .route-acts .btn{flex:1;justify-content:center;min-width:120px}
+  .btn-opt{background:var(--gold);color:#fff;border-color:var(--gold)}
+  .btn-go{background:var(--good);color:#fff;border-color:var(--good)}
+  .route-hint{font-size:11.5px;color:var(--ink-soft);margin-top:10px;text-align:center}
+
+  /* ---------- packing ---------- */
+  .pack-box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+  .pack-prog{height:8px;background:var(--paper-2);border-radius:999px;overflow:hidden;margin-bottom:14px}
+  .pack-prog span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--shu),var(--gold));
+    transition:width .35s ease}
+  .pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px 14px}
+  .pack-item{display:flex;align-items:center;gap:9px;font-size:13px;cursor:pointer;color:var(--ink-soft);padding:3px 0}
+  .pack-item input{accent-color:var(--shu);width:16px;height:16px;flex-shrink:0}
+  .pack-item.done{color:#a99e8a;text-decoration:line-through}
+  .pack-count{font-size:12px;color:var(--ink-soft);text-align:right;margin-top:10px;font-family:"DM Mono",monospace}
+
+  footer{margin-top:34px;text-align:center;font-size:11.5px;color:var(--ink-soft);
+    border-top:1px solid var(--line);padding-top:18px}
+  footer b{color:var(--shu)}
+  @media(max-width:520px){
+    .wx-grid{grid-template-columns:1fr 1fr}
+    .pack-grid{grid-template-columns:1fr}
+    h1{font-size:26px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">OSAKA · 2 NIGHTS 3 DAYS</div>
+    <h1>오사카 셋이서, 3일<span class="sub">지팀 · SEUNG HEE 외 2 — 첫 해외여행 ✈️</span></h1>
+    <div class="meta-row">
+      <span><b>🏨 30 PIECES Namba</b> · Suite A</span>
+      <span>📅 <b>7.3(금) 16:00</b> ~ <b>7.5(일) 11:00</b></span>
+      <span>👤 성인 3</span>
+    </div>
+    <div class="countdown" id="countdown">출발까지 <b>--</b>일</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- WEATHER -->
+  <section id="weather">
+    <div class="sec-head"><span class="kanji">天</span><h2>여행 기간 날씨</h2><span class="line"></span></div>
+    <div id="wx-banner"></div>
+    <div class="wx-grid" id="wx-grid">
+      <div class="wx-loading">날씨 불러오는 중…</div>
+    </div>
+  </section>
+
+  <!-- ITINERARY -->
+  <section id="itinerary">
+    <div class="sec-head"><span class="kanji">程</span><h2>3일 일정</h2><span class="line"></span></div>
+
+    <div class="day">
+      <h3><span class="dno">DAY 1</span> 도착 · 난바 밤<span class="date">7.3 FRI</span></h3>
+      <ul>
+        <li>오후 간사이공항 도착 → 난바 이동</li>
+        <li><b>16:00</b> 30 PIECES Namba 체크인</li>
+        <li>저녁: 도톤보리·난바 산책 + <b>화로구이/철판</b> 한 끼</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <h3><span class="dno">DAY 2</span> 실내 코스 (교토 대체)<span class="date">7.4 SAT</span></h3>
+      <ul>
+        <li><b>이른 오전</b> 카이센동 — 우오이치 쇼쿠도(6시 오픈 직후, 줄 김)</li>
+        <li><b>낮</b> 카이유칸 수족관 또는 컵누들 뮤지엄(이케다)</li>
+        <li><b>오후</b> 신사이바시·도톤보리 아케이드 쇼핑(실내)</li>
+        <li><b>저녁</b> 강변 호사 — 스미레(나카노시마) or 와노미야(도톤보리)</li>
+      </ul>
+      <div class="note">⚠️ 예약했던 <b>인디고트래블 교토 버스투어 취소</b> → 취소·환불 규정(마감일/위약금) 먼저 확인하기</div>
+    </div>
+
+    <div class="day">
+      <h3><span class="dno">DAY 3</span> 마무리 · 출국<span class="date">7.5 SUN</span></h3>
+      <ul>
+        <li>오전 가볍게 동네 산책 / 마지막 쇼핑</li>
+        <li><b>11:00</b> 체크아웃 → 공항</li>
+      </ul>
+      <div class="note">⚠️ 일요일은 <b>우오이치·신센야 휴무</b> — 카이센동은 7.3 또는 7.4에!</div>
+    </div>
+  </section>
+
+  <!-- PLACES -->
+  <section id="explore">
+    <div class="sec-head"><span class="kanji">食</span><h2>맛집 · 장소 모음</h2><span class="line"></span></div>
+    <div class="filters" id="filters">
+      <span class="chip active" data-cat="all">전체</span>
+      <span class="chip" data-cat="kaisen">🍣 카이센동</span>
+      <span class="chip" data-cat="robata">🔥 화로구이</span>
+      <span class="chip" data-cat="teppan">🍳 철판</span>
+      <span class="chip" data-cat="river">🌆 강변·호사</span>
+      <span class="chip" data-cat="indoor">🏛️ 실내</span>
+      <span class="chip" data-cat="safe">🍤 안전메뉴</span>
+      <label class="rain-toggle"><input type="checkbox" id="indoorOnly"> 실내만 보기</label>
+    </div>
+    <div id="places"></div>
+  </section>
+
+  <!-- ROUTE -->
+  <section id="route">
+    <div class="sec-head"><span class="kanji">路</span><h2>동선 만들기</h2><span class="line"></span></div>
+    <div class="route-box">
+      <div class="route-empty" id="route-empty">위 카드에서 <b>＋동선</b>을 눌러 장소를 담아봐</div>
+      <ul id="route-list"></ul>
+      <div class="route-acts" id="route-acts" style="display:none">
+        <button class="btn btn-opt" id="optimize">🧭 동선 최적화</button>
+        <button class="btn btn-go" id="openMaps">🗺️ 구글맵 열기</button>
+      </div>
+      <div class="route-hint" id="route-hint" style="display:none">숙소(난바)에서 가까운 순으로 정렬돼. 구글맵은 대중교통 길찾기로 열려.</div>
+    </div>
+  </section>
+
+  <!-- PACKING -->
+  <section id="packing">
+    <div class="sec-head"><span class="kanji">荷</span><h2>준비물 체크</h2><span class="line"></span></div>
+    <div class="pack-box">
+      <div class="pack-prog"><span id="packBar"></span></div>
+      <div class="pack-grid" id="packGrid"></div>
+      <div class="pack-count" id="packCount"></div>
+    </div>
+  </section>
+
+  <footer>
+    오사카 7.3–7.5 · 셋이서 떠나는 첫 여행 <b>♥</b><br>
+    날씨 Open-Meteo · 지도 Google Maps · 데이터는 이 브라우저에 저장돼요
+  </footer>
+</div>
+
+<script>
+/* ============ safe storage (localStorage + memory fallback) ============ */
+const store = (() => {
+  let ok = true;
+  try { const k="__t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); }
+  catch(e){ ok = false; }
+  const mem = {};
+  return {
+    get(k){ try { return ok ? localStorage.getItem(k) : (mem[k] ?? null); } catch(e){ return mem[k] ?? null; } },
+    set(k,v){ try { ok ? localStorage.setItem(k,v) : (mem[k]=v); } catch(e){ mem[k]=v; } }
+  };
+})();
+
+/* ============ trip constants ============ */
+const HOTEL = { name:"30 PIECES Namba", lat:34.6627, lng:135.5021 };
+const TRIP_START = "2026-07-03";
+const TRIP_END   = "2026-07-05";
+const OSAKA = { lat:34.6937, lng:135.5023 };
+
+/* ============ places data ============ */
+const PLACES = [
+  // 카이센동
+  { id:"uoichi", nm:"우오이치 쇼쿠도", sub:"魚いち食堂 · 키즈시장", cat:"kaisen", lat:34.657045, lng:135.499657,
+    area:"키즈시장", indoor:true, reservation:false, cash:true, closed:"수·일 휴무", price:2,
+    hours:"06:00–13:00",
+    tip:"프로 요리사들이 장 보러 오는 진짜 도매시장. 쿠로몬(관광지)과 차원이 달라. 6시 오픈 전 가야 줄 짧음." },
+  { id:"shinsenya", nm:"신센야", sub:"豪快立ち寿司 新鮮屋 · 닛폰바시", cat:"kaisen", lat:34.664147, lng:135.506246,
+    area:"닛폰바시", indoor:true, reservation:false, cash:false, closed:"일 휴무", price:1,
+    hours:"11:30–14:00 · 17:00–23:00",
+    tip:"1인이 운영하는 작은 가게. 연어·연어알 덮밥 후하고 가성비 최고." },
+
+  // 화로구이
+  { id:"tanuki", nm:"타누키차야", sub:"炉ばた焼 たぬき茶屋 · 센니치마에", cat:"robata", lat:34.666636, lng:135.504370,
+    area:"센니치마에", indoor:true, reservation:true, cash:false, closed:null, price:1,
+    hours:"16:00–23:00",
+    tip:"바 자리 앉으면 셰프가 눈앞에서 구워줌. 거의 전 메뉴 약 350엔 균일. 카운터석은 전화로 'カウンター席希望' 요청." },
+  { id:"isshin", nm:"로바다야키 잇신", sub:"炉端焼き一新 · 난바", cat:"robata", lat:34.667916, lng:135.500972,
+    area:"난바", indoor:true, reservation:true, cash:false, closed:"수 휴무", price:2,
+    hours:"평일 17:00– · 토·일 14:00–23:30",
+    tip:"짚불에 그을린 생선·와규·구운 주먹밥이 시그니처. 타베로그/핫페퍼로 온라인 즉시 예약. 코스(4명~)는 취소 위약금 있으니 3명은 단품으로." },
+
+  // 철판 / 오코노미야키
+  { id:"tetsuju", nm:"테츠주", sub:"黒毛和牛 鉄板焼 おこのみ · 난바", cat:"teppan", lat:34.664869, lng:135.504414,
+    area:"난바", indoor:true, reservation:false, cash:false, closed:null, price:2,
+    hours:"15:00–23:00",
+    tip:"관광객 동선 벗어난 골목 숨은집. 세트로 테판야키+오코노미야키 둘 다. 새 음식 못 먹는 친구도 OK." },
+  { id:"sakabaO", nm:"오코노미야키 사카바 O", sub:"お好み焼き酒場O · 난바", cat:"teppan", lat:34.668062, lng:135.500788,
+    area:"난바", indoor:true, reservation:false, cash:false, closed:null, price:2,
+    hours:"11:30–15:00 · 17:00–22:00",
+    tip:"철판에서 부쳐 눈앞에 밀어주는 재미. 야키소바도 같이. 점심·저녁 다 열어 동선 짜기 편함." },
+
+  // 안전 메뉴 (새 음식 못 먹는 친구용)
+  { id:"izumo", nm:"이즈모 우나기", sub:"いづも · 후쿠시마", cat:"safe", lat:34.696356, lng:135.486708,
+    area:"후쿠시마", indoor:true, reservation:false, cash:false, closed:null, price:2,
+    hours:"11:00–15:00 · 17:00–23:00",
+    tip:"장어덮밥은 익혀서 달짝지근, 한국인 입에 거의 다 맞음. '맛있으면 먹는다' 친구한테 딱. 약 1시간 대기." },
+
+  // 실내 / 우천
+  { id:"kaiyukan", nm:"카이유칸 수족관", sub:"海遊館 · 오사카항", cat:"indoor", lat:34.654518, lng:135.428965,
+    area:"오사카항", indoor:true, reservation:false, cash:false, closed:null, price:2,
+    hours:"매일 09:30/10:30–20:00",
+    tip:"비 와도 무관. 고래상어 대형 수조가 압권. 난바에서 약 30분." },
+  { id:"cupnoodle", nm:"컵누들 뮤지엄", sub:"カップヌードルミュージアム · 이케다", cat:"indoor", lat:34.817885, lng:135.426644,
+    area:"이케다", indoor:true, reservation:false, cash:false, closed:"화 휴무", price:1,
+    hours:"09:30–16:30",
+    tip:"나만의 컵라면 만들기 500엔. 익숙한 음식+활동이라 picky 친구도 재밌어함. 난바 북쪽 약 40분." },
+  { id:"namba-parks", nm:"난바파크스", sub:"なんばパークス", cat:"indoor", lat:34.661608, lng:135.501935,
+    area:"난바", indoor:true, reservation:false, cash:false, closed:null, price:2,
+    hours:"쇼핑 11:00–21:00 · 식당 ~23:00",
+    tip:"숙소 바로 옆. 지붕 덮인 실내 쇼핑몰+루프가든. 비 오는 날 베이스캠프." },
+  { id:"shinsaibashi", nm:"신사이바시스지 상점가", sub:"心斎橋筋商店街", cat:"indoor", lat:34.672506, lng:135.501366,
+    area:"신사이바시", indoor:true, reservation:false, cash:false, closed:null, price:2,
+    hours:"대체로 11:00–20:00",
+    tip:"지붕 덮인 아케이드라 비 와도 쇼핑·먹방 가능. 도톤보리로 그대로 이어짐." },
+  { id:"dotonbori", nm:"도톤보리", sub:"道頓堀", cat:"indoor", lat:34.668723, lng:135.501297,
+    area:"난바", indoor:true, reservation:false, cash:false, closed:null, price:2,
+    hours:"24시간(상점 별도)",
+    tip:"글리코상·운하 야경. 비 오면 옆 아케이드로 피신 가능. 밤 분위기 필수 코스." },
+
+  // 강변 · 호사
+  { id:"sumile", nm:"스미레 오사카", sub:"sumile · 나카노시마 강변", cat:"river", lat:34.694877, lng:135.503603,
+    area:"나카노시마", indoor:true, terrace:true, reservation:true, cash:false, closed:null, price:3,
+    hours:"11:00–17:00 · 17:30–23:00",
+    tip:"네오르네상스 공회당이 보이는 강변 테라스. 골든아워에 미침. 이탈리안, 특별한 날 코스. 예약 추천." },
+  { id:"wanomiya", nm:"코베규 와노미야", sub:"神戸牛和ノ宮 · 도톤보리 본점", cat:"river", lat:34.668834, lng:135.504142,
+    area:"도톤보리", indoor:true, terrace:false, reservation:true, cash:false, closed:null, price:4,
+    hours:"11:00–22:00",
+    tip:"운하 옆 고급 철판 코베규(¥¥¥¥). 셰프가 부위별로 구워주고 소금·와사비·간장·마늘로 먹는 법까지. 진짜 호사 한 끼." },
+  { id:"brooklyn", nm:"브루클린 로스팅", sub:"Brooklyn Roasting · 키타하마", cat:"river", lat:34.691047, lng:135.509156,
+    area:"키타하마", indoor:true, terrace:true, reservation:false, cash:false, closed:null, price:2,
+    hours:"08:00–20:00",
+    tip:"강 바로 위 테라스 데크, 인더스트리얼 감성. 커피·선셋용으로 좋음." },
+  { id:"kitahama-retro", nm:"키타하마 레트로", sub:"北浜レトロ · 키타하마", cat:"river", lat:34.691710, lng:135.507483,
+    area:"키타하마", indoor:true, terrace:false, reservation:false, cash:false, closed:null, price:2,
+    hours:"11:00–19:00",
+    tip:"1912년 등록문화재 영국식 티룸. 강변뷰 애프터눈티. 줄 설 수 있음(17시 이후 빠짐)." },
+  { id:"island", nm:"&ISLAND 키타하마", sub:"アンドアイランド · 키타하마", cat:"river", lat:34.692215, lng:135.504154,
+    area:"키타하마", indoor:true, terrace:true, reservation:false, cash:false, closed:null, price:2,
+    hours:"11:00–22:00",
+    tip:"강변 테라스+바. 저녁 술 한잔도 가능. 강변 카페 중 가격대 합리적." }
+];
+
+const CAT_LABEL = { kaisen:"🍣 카이센동", robata:"🔥 화로구이", teppan:"🍳 철판", river:"🌆 강변·호사", indoor:"🏛️ 실내", safe:"🍤 안전메뉴" };
+
+/* ============ render places ============ */
+let activeCat = "all";
+let indoorOnly = false;
+const route = [];
+
+function priceTag(p){ return p ? "₩".repeat(p) : ""; }
+
+function placeCard(p){
+  const badges = [];
+  if(p.indoor) badges.push(`<span class="badge b-indoor">실내</span>`);
+  if(p.terrace) badges.push(`<span class="badge b-terrace">강변 테라스</span>`);
+  if(p.reservation) badges.push(`<span class="badge b-res">예약 권장</span>`);
+  if(p.cash) badges.push(`<span class="badge b-cash">현금만</span>`);
+  if(p.closed) badges.push(`<span class="badge b-closed">${p.closed}</span>`);
+  if(p.price) badges.push(`<span class="badge b-price">${priceTag(p.price)}</span>`);
+
+  const added = route.includes(p.id);
+  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.nm + " " + p.sub)}`;
+  return `<div class="place${added?' added':''}" data-id="${p.id}" data-cat="${p.cat}" data-indoor="${p.indoor?1:0}" data-terrace="${p.terrace?1:0}">
+    <div class="top">
+      <div class="nm">${p.nm}<small>${p.sub}</small></div>
+      <div class="area">${p.area}</div>
+    </div>
+    <div class="badges">${badges.join("")}</div>
+    <div class="tip">${p.tip}</div>
+    <div class="hours">🕒 ${p.hours}</div>
+    <div class="terrace-warn">☔ 테라스석은 야외라 비 오면 실내석으로. (강뷰는 실내에서도 보여)</div>
+    <div class="acts">
+      <button class="btn btn-add${added?' is-added':''}" onclick="toggleRoute('${p.id}')">${added?'✓ 담음':'＋ 동선'}</button>
+      <a class="btn btn-map" href="${mapUrl}" target="_blank" rel="noopener">🗺️ 지도</a>
+    </div>
+  </div>`;
+}
+
+function renderPlaces(){
+  const list = PLACES.filter(p=>{
+    if(activeCat!=="all" && p.cat!==activeCat) return false;
+    if(indoorOnly && !p.indoor) return false;
+    return true;
+  });
+  document.getElementById("places").innerHTML = list.map(placeCard).join("")
+    || `<div class="route-empty">조건에 맞는 곳이 없어요</div>`;
+}
+
+/* ============ route ============ */
+function toggleRoute(id){
+  const i = route.indexOf(id);
+  if(i>=0) route.splice(i,1); else route.push(id);
+  store.set("route", JSON.stringify(route));
+  renderPlaces();
+  renderRoute();
+}
+function rmRoute(id){
+  const i = route.indexOf(id);
+  if(i>=0) route.splice(i,1);
+  store.set("route", JSON.stringify(route));
+  renderPlaces();
+  renderRoute();
+}
+function renderRoute(){
+  const ul = document.getElementById("route-list");
+  const empty = document.getElementById("route-empty");
+  const acts = document.getElementById("route-acts");
+  const hint = document.getElementById("route-hint");
+  if(route.length===0){
+    ul.innerHTML=""; empty.style.display="block"; acts.style.display="none"; hint.style.display="none"; return;
+  }
+  empty.style.display="none"; acts.style.display="flex"; hint.style.display="block";
+  ul.innerHTML = route.map((id,idx)=>{
+    const p = PLACES.find(x=>x.id===id);
+    return `<li><span class="n">${idx+1}</span><span>${p.nm} <small style="color:var(--ink-soft)">· ${p.area}</small></span>
+      <button class="rm" onclick="rmRoute('${id}')" aria-label="삭제">×</button></li>`;
+  }).join("");
+}
+function haversine(a,b){
+  const R=6371, t=Math.PI/180;
+  const dLat=(b.lat-a.lat)*t, dLng=(b.lng-a.lng)*t;
+  const s=Math.sin(dLat/2)**2 + Math.cos(a.lat*t)*Math.cos(b.lat*t)*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(s));
+}
+function optimize(){
+  if(route.length<2) return;
+  const pts = route.map(id=>PLACES.find(x=>x.id===id));
+  const ordered=[]; let cur=HOTEL; const pool=[...pts];
+  while(pool.length){
+    let bi=0, bd=Infinity;
+    pool.forEach((p,i)=>{ const d=haversine(cur,p); if(d<bd){bd=d;bi=i;} });
+    cur=pool[bi]; ordered.push(cur.id); pool.splice(bi,1);
+  }
+  route.length=0; ordered.forEach(id=>route.push(id));
+  store.set("route", JSON.stringify(route));
+  renderPlaces(); renderRoute();
+}
+function openMaps(){
+  if(route.length===0) return;
+  const pts = route.map(id=>PLACES.find(x=>x.id===id));
+  const origin = `${HOTEL.lat},${HOTEL.lng}`;
+  const dest = `${pts[pts.length-1].lat},${pts[pts.length-1].lng}`;
+  const way = pts.slice(0,-1).map(p=>`${p.lat},${p.lng}`).join("|");
+  let url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}&travelmode=transit`;
+  if(way) url += `&waypoints=${encodeURIComponent(way)}`;
+  window.open(url,"_blank","noopener");
+}
+
+/* ============ packing ============ */
+const PACK = ["여권 · e티켓","엔화 현금 (시장 현금만!)","트래블/신용카드","휴대폰 충전기","보조배터리",
+  "일본 어댑터 (A타입)","우산 · 우비 (장마철)","자외선 차단제","모자 · 선글라스","얇은 긴팔 (냉방)",
+  "편한 신발","상비약 (지사제·두통약)","휴대용 선풍기","손수건","에코백 (쇼핑)","여행자보험 정보"];
+function renderPack(){
+  let saved={};
+  try{ saved=JSON.parse(store.get("pack")||"{}"); }catch(e){ saved={}; }
+  const grid=document.getElementById("packGrid");
+  grid.innerHTML = PACK.map((it,i)=>{
+    const done = !!saved[i];
+    return `<label class="pack-item${done?' done':''}"><input type="checkbox" data-i="${i}" ${done?'checked':''}>${it}</label>`;
+  }).join("");
+  grid.querySelectorAll("input").forEach(cb=>{
+    cb.addEventListener("change",()=>{
+      let s={}; try{ s=JSON.parse(store.get("pack")||"{}"); }catch(e){ s={}; }
+      s[cb.dataset.i]=cb.checked; store.set("pack",JSON.stringify(s));
+      cb.closest(".pack-item").classList.toggle("done",cb.checked);
+      updatePackBar();
+    });
+  });
+  updatePackBar();
+}
+function updatePackBar(){
+  let s={}; try{ s=JSON.parse(store.get("pack")||"{}"); }catch(e){ s={}; }
+  const done = PACK.filter((_,i)=>s[i]).length;
+  document.getElementById("packBar").style.width = (done/PACK.length*100)+"%";
+  document.getElementById("packCount").textContent = `${done} / ${PACK.length} 완료`;
+}
+
+/* ============ weather (Open-Meteo) ============ */
+function wxIcon(code){
+  if(code===0) return {i:"☀️",d:"맑음",rain:false};
+  if(code<=2) return {i:"🌤️",d:"대체로 맑음",rain:false};
+  if(code===3) return {i:"☁️",d:"흐림",rain:false};
+  if(code===45||code===48) return {i:"🌫️",d:"안개",rain:false};
+  if(code>=51&&code<=57) return {i:"🌦️",d:"이슬비",rain:true};
+  if(code>=61&&code<=67) return {i:"🌧️",d:"비",rain:true};
+  if(code>=71&&code<=77) return {i:"🌨️",d:"눈",rain:false};
+  if(code>=80&&code<=82) return {i:"🌧️",d:"소나기",rain:true};
+  if(code>=95) return {i:"⛈️",d:"천둥번개",rain:true};
+  return {i:"🌡️",d:"-",rain:false};
+}
+const DOW = ["일","월","화","수","목","금","토"];
+async function loadWeather(){
+  const grid = document.getElementById("wx-grid");
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${OSAKA.lat}&longitude=${OSAKA.lng}`
+    + `&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max`
+    + `&timezone=Asia%2FTokyo&start_date=${TRIP_START}&end_date=${TRIP_END}`;
+  try{
+    const res = await fetch(url);
+    if(!res.ok) throw new Error("bad response");
+    const data = await res.json();
+    const d = data.daily;
+    if(!d || !d.time || !d.time.length) throw new Error("no data");
+    let anyRain=false;
+    grid.innerHTML = d.time.map((date,i)=>{
+      const dt = new Date(date+"T00:00:00");
+      const wx = wxIcon(d.weathercode[i]);
+      const prob = d.precipitation_probability_max ? d.precipitation_probability_max[i] : null;
+      const isRain = wx.rain || (prob!=null && prob>=50);
+      if(isRain) anyRain=true;
+      return `<div class="wx-card${isRain?' is-rain':''}">
+        <div class="d">${date.slice(5).replace("-",".")} (${DOW[dt.getDay()]})</div>
+        <div class="ico">${wx.i}</div>
+        <div class="t">${Math.round(d.temperature_2m_max[i])}° <span class="lo">/ ${Math.round(d.temperature_2m_min[i])}°</span></div>
+        <div class="desc">${wx.d}${prob!=null?` · 강수 ${prob}%`:""}</div>
+        ${isRain?`<div class="rain-tag">☔ 실내 위주</div>`:""}
+      </div>`;
+    }).join("");
+
+    const banner = document.getElementById("wx-banner");
+    if(anyRain){
+      banner.style.display="block";
+      banner.innerHTML = `☔ <b>비 예보가 있는 날이 있어요.</b> 실내 코스 위주로 짜고, 강변 테라스는 실내석 대비를! (자동으로 '실내만 보기'를 켰어)`;
+      document.body.classList.add("raining");
+      const cb = document.getElementById("indoorOnly");
+      cb.checked = true; indoorOnly = true; renderPlaces();
+    }
+  }catch(e){
+    grid.innerHTML = `<div class="wx-loading">날씨를 불러오지 못했어요. (여행일이 가까워지면 다시 시도)<br>
+      <span style="font-size:11px">참고: 7월 오사카는 장마철 — 습하고 부분적 소나기 가능, 체감온도 높음.</span></div>`;
+  }
+}
+
+/* ============ countdown ============ */
+function countdown(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const start = new Date(TRIP_START+"T00:00:00");
+  const diff = Math.round((start-today)/86400000);
+  const el = document.getElementById("countdown");
+  if(diff>0) el.innerHTML = `출발까지 <b>${diff}</b>일`;
+  else if(diff===0) el.innerHTML = `오늘 출발! <b>0</b>일 ✈️`;
+  else el.innerHTML = `여행 중 / 완료 <b>♥</b>`;
+}
+
+/* ============ init ============ */
+(function init(){
+  // restore route
+  try{ const r=JSON.parse(store.get("route")||"[]"); if(Array.isArray(r)) r.forEach(id=>{ if(PLACES.find(p=>p.id===id)) route.push(id); }); }catch(e){}
+
+  document.getElementById("filters").addEventListener("click",e=>{
+    const chip=e.target.closest(".chip"); if(!chip) return;
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    chip.classList.add("active"); activeCat=chip.dataset.cat; renderPlaces();
+  });
+  document.getElementById("indoorOnly").addEventListener("change",e=>{
+    indoorOnly=e.target.checked; renderPlaces();
+  });
+  document.getElementById("optimize").addEventListener("click",optimize);
+  document.getElementById("openMaps").addEventListener("click",openMaps);
+
+  renderPlaces();
+  renderRoute();
+  renderPack();
+  countdown();
+  loadWeather();
+})();
+</script>
+</body>
+</html>
