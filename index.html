@@ -287,6 +287,7 @@
       <span class="chip" data-cat="river">🌆 강변·호사</span>
       <span class="chip" data-cat="indoor">🏛️ 실내</span>
       <span class="chip" data-cat="safe">🍤 안전메뉴</span>
+      <span class="chip" data-cat="shopping">🛍️ 쇼핑</span>
       <label class="rain-toggle"><input type="checkbox" id="indoorOnly"> 실내만 보기</label>
     </div>
     <div id="places"></div>
@@ -421,10 +422,44 @@ const PLACES = [
   { id:"island", nm:"&ISLAND 키타하마", sub:"アンドアイランド · 키타하마", cat:"river", lat:34.692215, lng:135.504154,
     area:"키타하마", indoor:true, terrace:true, reservation:false, cash:false, closed:null, price:2,
     hours:"11:00–22:00",
-    tip:"강변 테라스+바. 저녁 술 한잔도 가능. 강변 카페 중 가격대 합리적." }
+    tip:"강변 테라스+바. 저녁 술 한잔도 가능. 강변 카페 중 가격대 합리적." },
+
+  // 쇼핑
+  { id:"humanmade", nm:"HUMAN MADE", sub:"신사이바시 PARCO 1F", cat:"shopping", lat:34.673812, lng:135.500877,
+    area:"신사이바시", indoor:true, reservation:false, cash:false, closed:null, price:3,
+    hours:"10:00–20:00",
+    tip:"오사카 유일 휴먼메이드 매장. 매장 작고 인기템은 금방 품절 + 오픈 전 줄 서기도. 부지런히 오전에." },
+  { id:"loft", nm:"난바 로프트 (LOFT)", sub:"난바파크스 5F", cat:"shopping", lat:34.661215, lng:135.502370,
+    area:"난바", indoor:true, reservation:false, cash:false, closed:null, price:2,
+    hours:"11:00–21:00",
+    tip:"숙소 바로 옆! 문구·잡화·코스메틱 대형 매장. 면세 되고 밤 9시까지라 동선 끝에 넣기 좋음." },
+  { id:"hands", nm:"핸즈 (구 도큐핸즈)", sub:"신사이바시 PARCO 9–11F", cat:"shopping", lat:34.674239, lng:135.500932,
+    area:"신사이바시", indoor:true, reservation:false, cash:false, closed:null, price:2,
+    hours:"10:00–20:00",
+    tip:"문구·잡화·프리미엄 기념품 끝판왕. 면세는 세후 5,500엔 이상부터(영수증 합산 가능)." },
+  { id:"daimaru-shin", nm:"다이마루 신사이바시", sub:"본관 · 명품 백화점", cat:"shopping", lat:34.673241, lng:135.500961,
+    area:"신사이바시", indoor:true, reservation:false, cash:false, closed:null, price:4,
+    hours:"10:00–20:00",
+    tip:"셀린느·미우미우·로에베·프라다 등. 환율+면세로 한국보다 메리트 있는 편(모델마다 차이, 예전만큼 극단적이진 않음). 오전이 한산." },
+  { id:"daimaru-umeda", nm:"다이마루 우메다", sub:"우메다 · 명품 백화점", cat:"shopping", lat:34.701789, lng:135.496576,
+    area:"우메다", indoor:true, reservation:false, cash:false, closed:null, price:4,
+    hours:"10:00–20:00",
+    tip:"재고 많은 대형 백화점. 신사이바시에 원하는 모델 없으면 여기로. 난바에서 지하철 약 15분." },
+  { id:"brandoff", nm:"브랜드오프 (BRAND OFF)", sub:"중고명품 · 신사이바시", cat:"shopping", lat:34.672961, lng:135.501938,
+    area:"신사이바시", indoor:true, reservation:false, cash:false, closed:null, price:3,
+    hours:"11:00–20:00",
+    tip:"상태 좋은 중고 명품백 다양(평점 4.8). 컨디션 등급 꼼꼼히 보고, 하드웨어·박음질 확인하고 사기." },
+  { id:"kindal", nm:"킨달 (Kindal)", sub:"아메무라 중고", cat:"shopping", lat:34.671986, lng:135.497583,
+    area:"아메무라", indoor:true, reservation:false, cash:false, closed:null, price:2,
+    hours:"11:00–20:00",
+    tip:"평점 5.0 중고 편집숍. 명품+스트릿(슈프림 등) 상태 좋은 매물 많음. 온라인 재고도 조회돼." },
+  { id:"bookoff", nm:"북오프 플러스", sub:"난바 에비스바시", cat:"shopping", lat:34.667807, lng:135.501410,
+    area:"난바", indoor:true, reservation:false, cash:false, closed:null, price:1,
+    hours:"10:00–22:00",
+    tip:"중고 책·만화·피규어·의류에 3층은 중고 명품까지. 밤 10시까지, 숙소 근처라 밤에 들르기 좋음." }
 ];
 
-const CAT_LABEL = { kaisen:"🍣 카이센동", robata:"🔥 화로구이", teppan:"🍳 철판", river:"🌆 강변·호사", indoor:"🏛️ 실내", safe:"🍤 안전메뉴" };
+const CAT_LABEL = { kaisen:"🍣 카이센동", robata:"🔥 화로구이", teppan:"🍳 철판", river:"🌆 강변·호사", indoor:"🏛️ 실내", safe:"🍤 안전메뉴", shopping:"🛍️ 쇼핑" };
 
 /* ============ render places ============ */
 let activeCat = "all";
